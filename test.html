@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>Package.js Test</title>
+<style type="text/css">
+body { font-size:13px; line-height:1.4em; }
+</style>
+<script type="text/javascript" src="package.js"></script>
+<script type="text/javascript">
+function log(msg) {
+    document.body.innerHTML += msg + "<br>";
+}
+
+window.onload = function()
+{
+    log('### global class example');
+    Class('Animal', function()
+    {
+        //constructor
+        this.Animal = function(type)
+        {
+            this._type = type;
+        };
+        
+        //getter
+        this.__get__type = function()
+        {
+            return this._type;
+        };
+    });
+    
+    var animal = new Animal("Dog");
+    log(Animal);// [class Animal]
+    log(animal);// [object animal]
+    log(animal.type)// Dog
+    //for IE
+    //log(animal.getType())
+    log((animal instanceof Animal))// true
+    log((animal.constructor == Animal))// true
+    log("------------------------------");
+    
+    
+    log('### namespaced example extending Animal');
+    package('com.arahaya.js', function()
+    {
+        Class('Dog').Extends(Animal, function()
+        {
+            //constructor
+            this.Dog = function(name)
+            {
+                this.__super__.constructor('Dog');
+                this._name = name;
+            };
+            
+            //method
+            this.greet = function()
+            {
+                return 'My name is ' + this.name;
+            };
+            
+            //getter
+            this.__get__name = function()
+            {
+                return this._name;
+            };
+        });
+    });
+    
+    var Dog = com.arahaya.js.Dog;
+    var dog = new Dog("Pluto");
+    /* or you could access directly using the full namespace
+    var dog = new com.arahaya.js.Dog("Pluto");
+    */
+    log(Dog);// [class Dog]
+    log(dog);// [object dog]
+    log(dog.type)// Dog
+    log(dog.greet())// My name is Pluto
+    log((dog instanceof Animal))// true
+    log((dog instanceof Dog))// true
+    log((dog.constructor == Dog))// true
+    log("------------------------------");
+    
+    
+    log('### overriding example extending Dog');
+    package('com.arahaya.js', function()
+    {
+        Class('Beagle').Extends(Dog, function()
+        {
+            //constructor
+            this.Beagle = function(name)
+            {
+                this.__super__.constructor(name);
+            };
+            
+            //override method
+            this.greet = function()
+            {
+                return this.__super__.greet() + " and I am a Beagle";
+            };
+        });
+    });
+    
+    var Beagle = com.arahaya.js.Beagle;
+    var beagle = new Beagle("Snoopy");
+    log(Beagle);// [class Beagle]
+    log(beagle);// [object beagle]
+    log(beagle.type)// Dog
+    log(beagle.greet())// My name is Snoopy and I am a Beagle
+    log((beagle instanceof Animal))// true
+    log((beagle instanceof Dog))// true
+    log((beagle instanceof Beagle))// true
+    log((beagle.constructor == Beagle))// true
+    log("------------------------------");
+}
+</script>
+</head>
+<body>
+</body>
+</html>
