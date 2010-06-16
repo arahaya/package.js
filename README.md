@@ -48,7 +48,8 @@ Planned to be a part of [CanvasScript3](http://github.com/arahaya/CanvasScript3)
         //constructor
         this.Cat = function(name, age)
         {
-            this.__super__.constructor(age);
+            //call the Animal(super) constructor
+            Animal.call(this, age);
             this._name = name;
         };
         

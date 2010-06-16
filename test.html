@@ -47,7 +47,7 @@ window.onload = function()
             //constructor
             this.Dog = function(name)
             {
-                this.__super__.constructor('Dog');
+                Animal.call(this, 'Dog');
                 this._name = name;
             };
             
@@ -83,18 +83,21 @@ window.onload = function()
     log('### overriding example extending Dog');
     package('com.arahaya.js', function()
     {
+        var Dog = com.arahaya.js.Dog;
+        
         Class('Beagle').Extends(Dog, function()
         {
             //constructor
             this.Beagle = function(name)
             {
-                this.__super__.constructor(name);
+                Dog.call(this, 'Dog');
+                this._name = name;
             };
             
             //override method
             this.greet = function()
             {
-                return this.__super__.greet() + " and I am a Beagle";
+                return Dog.prototype.greet.call(this) + " and I am a Beagle";
             };
         });
     });

@@ -95,7 +95,9 @@ var Class;
         
         //add a reference to the superClass
         //TODO: not sure if this is good enough
-        subClass.prototype.__super__ = superClass.prototype;
+        //UPDATE: this didn't work.
+        //subClass.prototype.__super__ = superClass.prototype;
+        
         
         //set the default toString methods
         subClass.toString = function()
