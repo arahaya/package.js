@@ -40,7 +40,7 @@ window.onload = function()
     
     
     log('### namespaced example extending Animal');
-    package('com.arahaya.js', function()
+    Package('com.arahaya.js', function()
     {
         Class('Dog').Extends(Animal, function()
         {
@@ -81,7 +81,7 @@ window.onload = function()
     
     
     log('### overriding example extending Dog');
-    package('com.arahaya.js', function()
+    Package('com.arahaya.js', function()
     {
         var Dog = com.arahaya.js.Dog;
         

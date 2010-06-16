@@ -25,41 +25,59 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
     OTHER DEALINGS IN THE SOFTWARE.
 */
-var package;
+var Package;
 var Class;
 (function()
 {
     var currentNamespace = window;
     
-    package = function(namespace, packageCode)
+    Package = function(packageName, packageCode)
     {
+        if (currentNamespace !== window) {
+            //currently inside a package
+            throw new Error("Packages cannot be nested.");
+        }
+        
         if (arguments.length == 2) {
             //namespace and packageCode was passed
-            var paths = namespace.split('.');
+            var paths = packageName.split('.');
+            var base = currentNamespace;
             for (var i = 0, l = paths.length; i < l; ++i)
             {
                 var path = paths[i];
-                if (currentNamespace[path] === undefined) {
-                    currentNamespace[path] = {};
+                if (base[path] === undefined) {
+                    base[path] = {};
                 }
-                currentNamespace = currentNamespace[path];
+                else if (!(base[path] instanceof Object)) {
+                    throw new Error("Package '" + packageName + "' is not available");
+                }
+                base = base[path];
             }
+            
+            currentNamespace = base;
         }
         else if (arguments.length == 1) {
             //only the packageCode was passed
             //use the global namespace
-            packageCode = namespace;
+            packageCode = packageName;
         }
         else {
             return;
         }
         
+        //run the user code
         packageCode.call(currentNamespace);
+        
+        //reset the current namespace to global
         currentNamespace = window;
     };
 
     Class = function(className, classObject)
     {
+        if (currentNamespace[className] !== undefined) {
+            throw new Error('Duplicate definition: ' + className + '.');
+        }
+        
         extendClass(Object, className, classObject);
         
         return {
@@ -70,7 +88,7 @@ var Class;
         };
     };
     
-    extendClass = function(superClass, className, classObject)
+    var extendClass = function(superClass, className, classObject)
     {
         //normalize the classObject
         if (classObject === undefined) {
@@ -103,12 +121,12 @@ var Class;
         subClass.toString = function()
         {
             return '[class ' + className + ']';
-        }
+        };
         
         subClass.prototype.toString = function()
         {
             return '[object ' + className + ']';
-        }
+        };
         
         //copy the properties from the classObject
         //to the subClass constructor
@@ -159,6 +177,7 @@ var Class;
             subClass.prototype[property] = classObject[property];
         }
         
+        //append the new class to the current namespace
         currentNamespace[className] = subClass;
     };
 })();

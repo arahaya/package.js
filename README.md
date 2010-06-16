@@ -66,7 +66,7 @@ Planned to be a part of [CanvasScript3](http://github.com/arahaya/CanvasScript3)
 
 ## Package Example ##
 
-    package("com.arahaya.js", function()
+    Package("com.arahaya.js", function()
     {
         Class('Cat', function()
         {
